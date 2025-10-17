@@ -1,0 +1,2 @@
+# typo-rush01
+TYPING GAME!!! TEST YOUR SKILLS
