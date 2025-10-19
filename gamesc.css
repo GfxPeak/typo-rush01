@@ -336,7 +336,7 @@ body[data-mode="conquest"] .wrongs-left {
 /* ===== TIMER ===== */
 .time {
   position: relative;
-  margin-top: 0; /* removed large margin */
+  margin-top: 5vh; /* removed large margin */
   color: #ffffff;
   background: transparent;
   font-weight: 900;
@@ -351,6 +351,7 @@ body[data-mode="conquest"] .wrongs-left {
 }
 
 }
+
 
 
 
