@@ -322,19 +322,14 @@ body[data-mode="conquest"] .wrongs-left {
 }
 /* ===== EXTRA SMALL SCREENS (phones ≤ 360px) ===== */
 @media (max-width: 360px) {
-  body {
-    padding: 5vh 4vw;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-  }
-
+  {
   .time {
     margin-top: 5vh;
     font-size: clamp(1.8rem, 11vw, 3.2rem);
     letter-spacing: 3px;
   }
 }
+
 
 
 
