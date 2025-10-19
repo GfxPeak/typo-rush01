@@ -321,7 +321,7 @@ body[data-mode="conquest"] .wrongs-left {
   .input-box { width: 95%; font-size: clamp(14px, 4vw, 18px); }
 }
 /* ===== EXTRA SMALL SCREENS (phones ≤ 360px) ===== */
-@media (max-width: 360px) {
+/*@media (max-width: 360px) {
   body {
     padding: 5vh 4vw;
     flex-direction: column;
@@ -374,7 +374,8 @@ body[data-mode="conquest"] .wrongs-left {
   .recovery-animation {
     font-size: clamp(1.5rem, 6vw, 3rem);
   }
-}
+}*/
+
 
 
 
