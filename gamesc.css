@@ -322,36 +322,11 @@ body[data-mode="conquest"] .wrongs-left {
 }
 /* ===== EXTRA SMALL SCREENS (phones ≤ 360px) ===== */
 @media (max-width: 360px) {
- /* ===== CENTER AREA ===== */
-.center {
-  text-align: center;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2vh; /* adds space between timer, words, and input */
-}
-
-/* ===== TIMER ===== */
 .time {
-  position: relative;
-  margin-top: 5vh; /* removed large margin */
-  margin-bottom: 6vh;
-  color: #ffffff;
-  background: transparent;
-  font-weight: 900;
-  font-size: clamp(2.5rem, 10vw, 8rem);
-  text-shadow: 0 0 15px #b96eff,
-               0 0 30px #c896ff,
-               0 0 50px rgba(200, 150, 255, 0.4);
-  letter-spacing: clamp(4px, 1vw, 10px);
-  animation: digitalPulse 2s ease-in-out infinite;
-  font-family: 'Digital7';
-  text-align: center;
-}
+ margin-bottom: 6vh;
 
 }
+
 
 
 
