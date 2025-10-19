@@ -316,7 +316,7 @@ body[data-mode="conquest"] .wrongs-left {
   body { padding: 4vh 5vw; }
   .score { top: 1vh; left: 3vw; font-size: 1rem; }
   .music-wrap { top: 1vh; right: 3vw; }
-  .time { margin-top: 5vh; font-size: clamp(2rem, 12vw, 4rem); }
+  .time { margin-top: 7vh; font-size: clamp(2rem, 12vw, 4rem); }
   .words { font-size: clamp(18px, 5vw, 26px); }
   .input-box { width: 95%; font-size: clamp(14px, 4vw, 18px); }
 }
@@ -338,6 +338,7 @@ body[data-mode="conquest"] .wrongs-left {
   text-align: center;
 }
 }
+
 
 
 
