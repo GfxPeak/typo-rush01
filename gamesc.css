@@ -321,7 +321,7 @@ body[data-mode="conquest"] .wrongs-left {
   .input-box { width: 95%; font-size: clamp(14px, 4vw, 18px); }
 }
 /* ===== EXTRA SMALL SCREENS (phones ≤ 360px) ===== */
-/*@media (max-width: 360px) {
+@media (max-width: 360px) {
   body {
     padding: 5vh 4vw;
     flex-direction: column;
@@ -329,52 +329,13 @@ body[data-mode="conquest"] .wrongs-left {
     align-items: center;
   }
 
-  .score {
-    top: 1vh;
-    left: 2vw;
-    font-size: 0.9rem;
-    padding: 0.4em 0.8em;
-  }
-
-  .music-wrap {
-    top: 1vh;
-    right: 2vw;
-    gap: 6px;
-  }
-
-  .music-btn, .menu-btn {
-    font-size: 0.8rem;
-    padding: 6px 14px;
-    border-radius: 20px;
-  }
-
   .time {
-    margin-top: 7vh;
+    margin-top: 5vh;
     font-size: clamp(1.8rem, 11vw, 3.2rem);
     letter-spacing: 3px;
   }
+}
 
-  .words {
-    font-size: clamp(16px, 5vw, 22px);
-    line-height: 1.2;
-    margin-bottom: 2.5vh;
-  }
-
-  .input-box {
-    width: 95%;
-    font-size: clamp(12px, 4vw, 16px);
-    padding: 8px 10px;
-  }
-
-  .wrongs-left {
-    font-size: clamp(0.9rem, 3vw, 1.2rem);
-    top: 2vh;
-  }
-
-  .recovery-animation {
-    font-size: clamp(1.5rem, 6vw, 3rem);
-  }
-}*/
 
 
 
