@@ -324,11 +324,12 @@ body[data-mode="conquest"] .wrongs-left {
 @media (max-width: 360px) {
   {
   .time {
-    margin-top: 3vh;
+    margin-top: 7vh;
     font-size: clamp(1.8rem, 11vw, 3.2rem);
     letter-spacing: 3px;
   }
 }
+
 
 
 
