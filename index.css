@@ -361,3 +361,120 @@ html, body {
     top: 52%;
   }
 }
+/* ===== QUIT MENU OVERLAY ===== */
+.quit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.quit-box {
+  position: relative;
+  background: linear-gradient(180deg, rgba(145,2,85,0.18), rgba(47,13,87,0.28));
+  border-radius: 16px;
+  padding: 30px 28px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(180,0,255,0.35);
+  width: min(90%, 400px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.quit-title {
+  font-family: 'SuperPixel';
+  font-size: clamp(22px, 3vw, 32px);
+  color: #e2d1d9;
+  text-shadow: 0 0 8px rgba(187,24,113,0.9),
+               0 0 20px rgba(180,0,255,0.35);
+  margin-bottom: 20px;
+}
+
+.quit-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.quit-options button,
+.feedback-actions button {
+  background: linear-gradient(180deg, rgba(145,2,85,0.18), rgba(47,13,87,0.28));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 10px rgba(196,78,255,0.3);
+}
+.quit-options button:hover,
+.feedback-actions button:hover {
+  background: linear-gradient(90deg, #7223bb, #9426a5);
+  box-shadow: 0 0 25px rgba(201,14,230,0.9);
+  transform: scale(1.05);
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.close-btn:hover {
+  color: #ffb3ff;
+  transform: scale(1.2);
+}
+
+/* Feedback Form */
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+.feedback-form input,
+.feedback-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 0.95rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.feedback-form textarea {
+  height: 120px;
+}
+
+.feedback-actions {
+  margin-top: 8px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 720px) {
+  .quit-box { width: 80%; padding: 22px; }
+  .quit-title { font-size: clamp(18px, 4vw, 26px); }
+}
