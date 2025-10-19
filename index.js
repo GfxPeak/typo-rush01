@@ -125,9 +125,54 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   
-  quitBtn.addEventListener('click', () => {
-    if (confirm('Quit the game?')) window.close();
-  });
+  const quitMenu = document.getElementById('quitMenu');
+const closeQuit = document.getElementById('closeQuit');
+const githubBtn = document.getElementById('githubBtn');
+const feedbackBtn = document.getElementById('feedbackBtn');
+const feedbackForm = document.getElementById('feedbackForm');
+const submitFeedback = document.getElementById('submitFeedback');
+
+quitBtn.addEventListener('click', () => {
+  if (window.musicController) window.musicController.playClick();
+  quitMenu.style.display = 'flex';
+});
+
+closeQuit.addEventListener('click', () => {
+  quitMenu.style.display = 'none';
+  feedbackForm.style.display = 'none';
+  document.getElementById('quitOptions').style.display = 'flex';
+});
+
+githubBtn.addEventListener('click', () => {
+  if (window.musicController) window.musicController.playClick();
+  window.location.href = "https://github.com/GfxPeak/typo-rush01"; // 🔧 replace with your actual GitHub
+});
+
+feedbackBtn.addEventListener('click', () => {
+  if (window.musicController) window.musicController.playClick();
+  document.getElementById('quitOptions').style.display = 'none';
+  feedbackForm.style.display = 'flex';
+});
+
+submitFeedback.addEventListener('click', () => {
+  const email = document.getElementById('feedbackEmail').value.trim();
+  const message = document.getElementById('feedbackMsg').value.trim();
+
+  if (!message) {
+    alert('Please write your feedback before submitting.');
+    return;
+  }
+
+  // Send via mailto (simple, no backend)
+  const mailtoLink = `mailto:your@email.com?subject=TypoRush Feedback from ${encodeURIComponent(email || 'anonymous')}&body=${encodeURIComponent(message)}`;
+  window.location.href = mailtoLink;
+
+  alert('Thank you for your feedback!');
+  quitMenu.style.display = 'none';
+  feedbackForm.style.display = 'none';
+  document.getElementById('quitOptions').style.display = 'flex';
+});
+
   
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
