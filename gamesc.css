@@ -323,9 +323,10 @@ body[data-mode="conquest"] .wrongs-left {
 /* ===== EXTRA SMALL SCREENS (phones ≤ 360px) ===== */
 @media (max-width: 360px) {
 .time {
- margin-bottom: 6vh;
+ margin-top: 8vh;
 }
 }
+
 
 
 
