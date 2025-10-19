@@ -52,6 +52,28 @@
     <input id="usernameInput" type="text" placeholder="Enter your name" aria-label="Your name">
     <button class="go" id="goBtn">Go</button>
   </div>
+  <!-- Quit Menu Overlay -->
+  <div id="quitMenu" class="quit-overlay" style="display:none;">
+    <div class="quit-box">
+      <button class="close-btn" id="closeQuit">✕</button>
+      <h2 class="quit-title">Leaving Already?</h2>
+      <div class="quit-options" id="quitOptions">
+        <button id="githubBtn">GitHub</button>
+        <button id="feedbackBtn">Feedback</button>
+      </div>
+
+      <!-- Feedback Form -->
+      <div id="feedbackForm" class="feedback-form" style="display:none;">
+        <input type="email" id="feedbackEmail" placeholder="Your Email (optional)" />
+        <textarea id="feedbackMsg" placeholder="Write your feedback or complaint..."></textarea>
+        <div class="feedback-actions">
+          <button id="submitFeedback">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
   <!-- scripts -->
    <script src="music.js"></script>
