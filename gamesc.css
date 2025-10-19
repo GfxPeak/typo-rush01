@@ -324,7 +324,7 @@ body[data-mode="conquest"] .wrongs-left {
 @media (max-width: 360px) {
 .time {
   position: relative;
-  margin-top: 15vh;
+  margin-top: 30vh;
   color: #ffffff;
   background: transparent;
   font-weight: 900;
@@ -338,6 +338,7 @@ body[data-mode="conquest"] .wrongs-left {
   text-align: center;
 }
 }
+
 
 
 
