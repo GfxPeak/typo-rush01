@@ -337,6 +337,7 @@ body[data-mode="conquest"] .wrongs-left {
 .time {
   position: relative;
   margin-top: 5vh; /* removed large margin */
+  margin-bottom: 6vh;
   color: #ffffff;
   background: transparent;
   font-weight: 900;
@@ -351,6 +352,7 @@ body[data-mode="conquest"] .wrongs-left {
 }
 
 }
+
 
 
 
