@@ -11,7 +11,7 @@
   <!-- Background -->
   
   <!-- Loading Screen - -->
-  <div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-overlay" id="loadingOverlay">h
     <div class="loader-content">
       <div class="loader-spinner"></div>
       <div class="loader-text">Loading...</div>
@@ -73,12 +73,28 @@
     </div>
   </div>
 
+<!-- Firebase Config (same as leaderboard) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBhCg2BMWcPgc44snQs9o5coDUEwIZyZjI",
+    authDomain: "typo-rush-3551b.firebaseapp.com",
+    projectId: "typo-rush-3551b",
+    storageBucket: "typo-rush-3551b.firebasestorage.app",
+    messagingSenderId: "769554999839",
+    appId: "1:769554999839:web:8cd7f9b73040c9546bc32a"
+  };
 
+  const app = initializeApp(firebaseConfig);
+  window.db = getFirestore(app);
+</script>
   <!-- scripts -->
    <script src="music.js"></script>
   <script src="index.js"></script>
 </body>
 </html>
  
+
 
