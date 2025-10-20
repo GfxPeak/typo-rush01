@@ -227,11 +227,20 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("📦 Saving feedback to localStorage...");
 
     // Save to localStorage immediately (like username)
+    const now = new Date();
     const feedbackData = {
       email: email,
       message: message,
-      timestamp: new Date().toISOString(),
-      submittedAt: Date.now()
+      submittedAt: now.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      }),
+      timestamp: now.toISOString()
     };
 
     // Get existing feedbacks or create new array
@@ -243,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Total pending feedbacks:", pendingFeedbacks.length);
 
     // Show success immediately
-    alert('✅ Thank you for your feedback!');
+    alert('Thank you for your feedback!');
     document.getElementById('feedbackEmail').value = '';
     document.getElementById('feedbackMsg').value = '';
     quitMenu.style.display = 'none';
