@@ -154,27 +154,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== FEEDBACK SUBMISSION =====
   submitFeedback.addEventListener('click', async () => {
-    const email = document.getElementById('feedbackEmail').value.trim() || "anonymous";
-    const message = document.getElementById('feedbackMsg').value.trim();
+    console.log("🔵 Submit button clicked!");
+    
+    const emailInput = document.getElementById('feedbackEmail');
+    const messageInput = document.getElementById('feedbackMsg');
+    
+    console.log("Email input found:", !!emailInput);
+    console.log("Message input found:", !!messageInput);
+    
+    const email = emailInput.value.trim() || "anonymous";
+    const message = messageInput.value.trim();
+    
+    console.log("Email value:", email);
+    console.log("Message value:", message);
+    console.log("Message length:", message.length);
 
     if (!message) {
+      console.log("❌ No message entered");
       alert("⚠️ Please write your feedback before submitting!");
       return;
     }
 
     // Check if Firebase is initialized
+    console.log("Checking Firebase...");
+    console.log("App exists:", !!app);
+    console.log("DB exists:", !!db);
+    
     if (!db) {
       console.error("❌ Firestore database not initialized");
-      alert("⚠️ Database connection error. Please check console.");
+      alert("⚠️ Database connection error. Please refresh the page.");
       return;
     }
 
-    console.log("📤 Attempting to submit feedback...");
-    console.log("Email:", email);
-    console.log("Message:", message);
+    console.log("📤 Starting submission process...");
+
+    // Disable button to prevent double-click
+    submitFeedback.disabled = true;
+    submitFeedback.textContent = "Submitting...";
 
     try {
-      // Add timestamp
       const feedbackData = {
         email: email,
         message: message,
@@ -182,16 +200,19 @@ document.addEventListener('DOMContentLoaded', () => {
         submittedAt: Date.now()
       };
 
-      console.log("Data to submit:", feedbackData);
+      console.log("📦 Data prepared:", feedbackData);
+      console.log("📍 Collection name: feedbacks");
 
       // Save to Firestore
+      console.log("🚀 Calling addDoc...");
       const docRef = await addDoc(collection(db, "feedbacks"), feedbackData);
       
-      console.log("✅ Feedback submitted successfully! Doc ID:", docRef.id);
+      console.log("✅✅✅ SUCCESS! Document ID:", docRef.id);
+      console.log("✅✅✅ Feedback saved to Firestore!");
 
       alert("✅ Thank you for your feedback!");
-      document.getElementById('feedbackEmail').value = "";
-      document.getElementById('feedbackMsg').value = "";
+      emailInput.value = "";
+      messageInput.value = "";
       quitMenu.style.display = 'none';
       feedbackForm.style.display = 'none';
       document.getElementById('quitOptions').style.display = 'flex';
@@ -200,18 +221,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (quitTitle) quitTitle.textContent = "Leaving Already?";
 
     } catch (err) {
-      console.error("❌ Error submitting feedback:", err);
+      console.error("❌❌❌ FIRESTORE ERROR:", err);
+      console.error("Error name:", err.name);
       console.error("Error code:", err.code);
       console.error("Error message:", err.message);
+      console.error("Full error object:", JSON.stringify(err, null, 2));
       
       // More specific error messages
       if (err.code === 'permission-denied') {
-        alert("⚠️ Permission denied. Please check Firestore security rules.");
+        alert("⚠️ PERMISSION DENIED!\n\nGo to Firebase Console → Firestore Database → Rules\n\nChange rules to:\n\nallow read, write: if true;");
       } else if (err.code === 'unavailable') {
-        alert("⚠️ Network error. Please check your internet connection.");
+        alert("⚠️ Network error. Check your internet connection.");
+      } else if (err.code === 'not-found') {
+        alert("⚠️ Firestore database not found. Make sure Firestore is enabled in Firebase Console.");
       } else {
-        alert("⚠️ Something went wrong! Error: " + err.message);
+        alert("⚠️ Error: " + err.message + "\n\nCheck browser console (F12) for details.");
       }
+    } finally {
+      // Re-enable button
+      submitFeedback.disabled = false;
+      submitFeedback.textContent = "Submit";
     }
   });
 
