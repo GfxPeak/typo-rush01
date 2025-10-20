@@ -1,3 +1,21 @@
+// ===== FIREBASE SETUP =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+// ===== INITIALIZE FIREBASE =====
+const firebaseConfig = {
+  // 🔹 Replace these with your actual Firebase config values from the Firebase Console 🔹
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.db = db;
 
 // ===== PRELOADER =====
 window.addEventListener('load', () => {
@@ -49,7 +67,7 @@ window.addEventListener('load', () => {
   }
 });
 
-
+// ===== MENU LOGIC =====
 const startBtn = document.getElementById('startBtn');
 const leaderboardBtn = document.getElementById('leaderboardBtn');
 const quitBtn = document.getElementById('quitBtn');
@@ -63,10 +81,7 @@ const lineEl = document.querySelector('.line');
 // --- Update hint based on music state ---
 function updateMusicHint() {
   if (!musicHint) return;
-  
-  // Check if music is on via the global controller
   const musicOn = window.musicController?.isMusicOn() || false;
-  
   if (musicOn) {
     musicHint.classList.remove('show');
   } else {
@@ -76,7 +91,6 @@ function updateMusicHint() {
 
 // --- Custom toggle handler to update hint ---
 function handleMusicToggle() {
-
   setTimeout(updateMusicHint, 50); // Small delay to let music.js update first
 }
 
@@ -114,87 +128,95 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.musicController) window.musicController.playClick();
     setTimeout(() => {
       window.location.href = 'optsc.html';
-    }, 150); // small delay so the sound plays fully
+    }, 150);
   });
 
   leaderboardBtn.addEventListener('click', () => {
     if (window.musicController) window.musicController.playClick();
     setTimeout(() => {
       window.location.href = 'lb1.html';
-    }, 150); // small delay so the sound plays fully
+    }, 150);
   });
 
-  
+  // ===== QUIT & FEEDBACK MENU =====
   const quitMenu = document.getElementById('quitMenu');
-const closeQuit = document.getElementById('closeQuit');
-const githubBtn = document.getElementById('githubBtn');
-const feedbackBtn = document.getElementById('feedbackBtn');
-const feedbackForm = document.getElementById('feedbackForm');
-const submitFeedback = document.getElementById('submitFeedback');
+  const closeQuit = document.getElementById('closeQuit');
+  const githubBtn = document.getElementById('githubBtn');
+  const feedbackBtn = document.getElementById('feedbackBtn');
+  const feedbackForm = document.getElementById('feedbackForm');
+  const submitFeedback = document.getElementById('submitFeedback');
 
-quitBtn.addEventListener('click', () => {
-  if (window.musicController) window.musicController.playClick();
-  quitMenu.style.display = 'flex';
-});
-
-closeQuit.addEventListener('click', () => {
-  quitMenu.style.display = 'none';
-  feedbackForm.style.display = 'none';
-  document.getElementById('quitOptions').style.display = 'flex';
-});
-
-githubBtn.addEventListener('click', () => {
-  if (window.musicController) window.musicController.playClick();
-  window.open("https://github.com/GfxPeak/typo-rush01", "_blank");
-});
-
-feedbackBtn.addEventListener('click', () => {
-  if (window.musicController) window.musicController.playClick();
-  document.getElementById('quitOptions').style.display = 'none';
-  feedbackForm.style.display = 'flex';
-  
-  // Change the title text for feedback
-  const quitTitle = document.querySelector('.quit-title');
-  if (quitTitle) {
-    quitTitle.textContent = 'We\'re Listening!';
-  }
-});
+  quitBtn.addEventListener('click', () => {
+    if (window.musicController) window.musicController.playClick();
+    quitMenu.style.display = 'flex';
+  });
 
   closeQuit.addEventListener('click', () => {
-  quitMenu.style.display = 'none';
-  feedbackForm.style.display = 'none';
-  document.getElementById('quitOptions').style.display = 'flex';
-  
-  // Restore original text
-  const quitTitle = document.querySelector('.quit-title');
-  if (quitTitle) {
-    quitTitle.textContent = 'Leaving Already?';
-  }
-});
+    quitMenu.style.display = 'none';
+    feedbackForm.style.display = 'none';
+    document.getElementById('quitOptions').style.display = 'flex';
+    
+    // Restore title
+    const quitTitle = document.querySelector('.quit-title');
+    if (quitTitle) {
+      quitTitle.textContent = 'Leaving Already?';
+    }
+  });
 
-submitFeedback.addEventListener('click', () => {
-  const email = document.getElementById('feedbackEmail').value.trim();
-  const message = document.getElementById('feedbackMsg').value.trim();
+  githubBtn.addEventListener('click', () => {
+    if (window.musicController) window.musicController.playClick();
+    window.open("https://github.com/GfxPeak/typo-rush01", "_blank");
+  });
 
-  if (!message) {
-    alert('Please write your feedback before submitting.');
-    return;
-  }
+  feedbackBtn.addEventListener('click', () => {
+    if (window.musicController) window.musicController.playClick();
+    document.getElementById('quitOptions').style.display = 'none';
+    feedbackForm.style.display = 'flex';
+    
+    const quitTitle = document.querySelector('.quit-title');
+    if (quitTitle) {
+      quitTitle.textContent = "We're Listening!";
+    }
+  });
 
-  // Send via mailto (simple, no backend)
-  const mailtoLink = `mailto:your@email.com?subject=TypoRush Feedback from ${encodeURIComponent(email || 'anonymous')}&body=${encodeURIComponent(message)}`;
-  window.location.href = mailtoLink;
+  // ===== FIRESTORE FEEDBACK SUBMIT =====
+  submitFeedback.addEventListener('click', async () => {
+    const email = document.getElementById('feedbackEmail').value.trim();
+    const message = document.getElementById('feedbackMsg').value.trim();
 
-  alert('Thank you for your feedback!');
-  quitMenu.style.display = 'none';
-  feedbackForm.style.display = 'none';
-  document.getElementById('quitOptions').style.display = 'flex';
-});
+    if (!message) {
+      alert('Please write your feedback before submitting.');
+      return;
+    }
 
-  
+    try {
+      const feedbackData = {
+        FB: message,
+        timestamp: new Date().toISOString()
+      };
+
+      if (email) {
+        feedbackData.email = email;
+      }
+
+      await addDoc(collection(window.db, "feedback"), feedbackData);
+      alert('Thank you for your feedback! It has been recorded.');
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      alert('Failed to send feedback. Please try again later.');
+    }
+
+    quitMenu.style.display = 'none';
+    feedbackForm.style.display = 'none';
+    document.getElementById('quitOptions').style.display = 'flex';
+
+    const quitTitle = document.querySelector('.quit-title');
+    if (quitTitle) {
+      quitTitle.textContent = 'Leaving Already?';
+    }
+  });
+
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
-
-
