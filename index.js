@@ -172,7 +172,9 @@ feedbackBtn.addEventListener('click', () => {
   }
 });
 
-submitFeedback.addEventListener('click', () => {
+submitFeedback.addEventListener('click', (e) => {
+  e.preventDefault();
+
   const email = document.getElementById('feedbackEmail').value.trim();
   const message = document.getElementById('feedbackMsg').value.trim();
 
@@ -181,20 +183,40 @@ submitFeedback.addEventListener('click', () => {
     return;
   }
 
-  // Send via mailto (simple, no backend)
-  const mailtoLink = `mailto:your@email.com?subject=TypoRush Feedback from ${encodeURIComponent(email || 'anonymous')}&body=${encodeURIComponent(message)}`;
-  window.location.href = mailtoLink;
+  // ---- GOOGLE FORM SUBMISSION ----
+  const googleFormURL = "https://docs.google.com/forms/d/e/1FAIpQLSdxM-ixMqudOndJO-X2E6Cv6r7rlWK7btRMX9j3Ptq3IPyZQA/formResponse";
 
-  alert('Thank you for your feedback!');
-  quitMenu.style.display = 'none';
-  feedbackForm.style.display = 'none';
-  document.getElementById('quitOptions').style.display = 'flex';
+  const formData = new FormData();
+  formData.append("entry.592221968", email);      // Email field
+  formData.append("entry.1379318390", message);   // Message field
+
+  fetch(googleFormURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  })
+  .then(() => {
+    alert("✅ Thank you for your feedback!");
+    document.getElementById('feedbackEmail').value = "";
+    document.getElementById('feedbackMsg').value = "";
+
+    // Reset and close feedback form
+    quitMenu.style.display = 'none';
+    feedbackForm.style.display = 'none';
+    document.getElementById('quitOptions').style.display = 'flex';
+  })
+  .catch((err) => {
+    console.error("Error submitting feedback:", err);
+    alert("⚠️ Something went wrong! Please try again later.");
+  });
 });
+
 
   
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
