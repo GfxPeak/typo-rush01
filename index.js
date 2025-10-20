@@ -152,6 +152,24 @@ feedbackBtn.addEventListener('click', () => {
   if (window.musicController) window.musicController.playClick();
   document.getElementById('quitOptions').style.display = 'none';
   feedbackForm.style.display = 'flex';
+  
+  // Change the title text for feedback
+  const quitTitle = document.querySelector('.quit-title');
+  if (quitTitle) {
+    quitTitle.textContent = 'We\'re Listening!';
+  }
+});
+
+  closeQuit.addEventListener('click', () => {
+  quitMenu.style.display = 'none';
+  feedbackForm.style.display = 'none';
+  document.getElementById('quitOptions').style.display = 'flex';
+  
+  // Restore original text
+  const quitTitle = document.querySelector('.quit-title');
+  if (quitTitle) {
+    quitTitle.textContent = 'Leaving Already?';
+  }
 });
 
 submitFeedback.addEventListener('click', () => {
@@ -178,4 +196,5 @@ submitFeedback.addEventListener('click', () => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
