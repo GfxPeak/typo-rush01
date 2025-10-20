@@ -171,7 +171,6 @@ feedbackBtn.addEventListener('click', () => {
     quitTitle.textContent = 'Leaving Already?';
   }
 });
-
 submitFeedback.addEventListener('click', (e) => {
   e.preventDefault();
 
@@ -179,25 +178,21 @@ submitFeedback.addEventListener('click', (e) => {
   const message = document.getElementById('feedbackMsg').value.trim();
 
   if (!message) {
-    alert('Please write your feedback before submitting.');
+    alert("Please write your feedback before submitting.");
     return;
   }
 
-  // ---- GOOGLE APPS SCRIPT WEB APP URL ----
-  const googleScriptURL = "https://script.google.com/macros/s/AKfycbx3AkKyqPWiCb1GRkd8ccQWqDmQnRu0N7WlQ2GxIU5NW2IiTyKPgzLAE3y5sH9Bb1hnWg/exec";
+  const formData = new FormData();
+  formData.append("entry.592221968", email);
+  formData.append("entry.1379318390", message);
 
-  fetch(googleScriptURL, {
+  fetch("https://docs.google.com/forms/u/0/d/e/1FAIpQLSdxM-ixMqudOndJO-X2E6Cv6r7rlWK7btRMX9j3Ptq3IPyZQA/formResponse", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: email,
-      message: message
-    }),
+    body: formData,
+    mode: "no-cors"
   })
   .then(() => {
-    alert("✅ Thank you for your feedback!");
+    alert("✅ Feedback submitted successfully!");
     document.getElementById('feedbackEmail').value = "";
     document.getElementById('feedbackMsg').value = "";
 
@@ -205,9 +200,9 @@ submitFeedback.addEventListener('click', (e) => {
     feedbackForm.style.display = 'none';
     document.getElementById('quitOptions').style.display = 'flex';
   })
-  .catch((err) => {
-    console.error("Error submitting feedback:", err);
-    alert("⚠️ Something went wrong! Please try again later.");
+  .catch((error) => {
+    console.error("Error submitting feedback:", error);
+    alert("⚠️ Something went wrong. Try again later.");
   });
 });
 
@@ -215,6 +210,7 @@ submitFeedback.addEventListener('click', (e) => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
