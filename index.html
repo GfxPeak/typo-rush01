@@ -15,17 +15,20 @@
     </div>
   </div>
 
+  <!-- Background -->
   <img src="index.png" alt="background" class="bg-img" />
   <div class="overlay"></div>
+
+  <!-- Title -->
   <div class="title">Typo Rush</div>
 
-  <!-- Music -->
+  <!-- Music toggle -->
   <div class="music-wrap">
     <button class="music-btn" id="musicToggle">Music: Off</button>
     <div id="musicHint" class="music-hint">UNMUTE SOUND</div>
   </div>
 
-  <!-- Center area -->
+  <!-- Center menu -->
   <div class="center-area">
     <div class="buttons">
       <button id="startBtn">Start</button>
@@ -37,23 +40,23 @@
     </div>
   </div>
 
-  <!-- Username -->
-  <div class="username-box" id="usernameBox">
+  <!-- Username input -->
+  <div class="username-box" id="usernameBox" style="display:none;">
     <input id="usernameInput" type="text" placeholder="Enter your name">
     <button class="go" id="goBtn">Go</button>
   </div>
 
-  <!-- Quit / Feedback -->
+  <!-- Quit / Feedback menu -->
   <div id="quitMenu" class="quit-overlay" style="display:none;">
     <div class="quit-box">
       <button class="close-btn" id="closeQuit">✕</button>
       <h2 class="quit-title">Leaving Already?</h2>
-
       <div class="quit-options" id="quitOptions">
         <button id="githubBtn">GitHub</button>
         <button id="feedbackBtn">Feedback</button>
       </div>
 
+      <!-- Feedback Form -->
       <div id="feedbackForm" class="feedback-form" style="display:none;">
         <input type="email" id="feedbackEmail" placeholder="Your Email (optional)" />
         <textarea id="feedbackMsg" placeholder="Write your feedback or complaint..."></textarea>
@@ -66,25 +69,6 @@
 
   <!-- Scripts -->
   <script src="music.js"></script>
-
-  <!-- Firebase Config -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBhCg2BMWcPgc44snQs9o5coDUEwIZyZjI",
-      authDomain: "typo-rush-3551b.firebaseapp.com",
-      projectId: "typo-rush-3551b",
-      storageBucket: "typo-rush-3551b.firebasestorage.app",
-      messagingSenderId: "769554999839",
-      appId: "1:769554999839:web:8cd7f9b73040c9546bc32a"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    window.db = getFirestore(app);
-  </script>
-
   <script type="module" src="index.js"></script>
 </body>
 </html>
