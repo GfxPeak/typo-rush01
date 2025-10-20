@@ -172,8 +172,24 @@ feedbackBtn.addEventListener('click', () => {
   }
 });
 
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
 
-submitFeedback.addEventListener("click", () => {
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase (if not already)
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ---- FEEDBACK SUBMISSION ----
+submitFeedback.addEventListener("click", async () => {
   const email = document.getElementById("feedbackEmail").value.trim();
   const message = document.getElementById("feedbackMsg").value.trim();
 
@@ -182,36 +198,31 @@ submitFeedback.addEventListener("click", () => {
     return;
   }
 
-  // ---- GOOGLE FORM SUBMISSION ----
-  const googleFormURL = "https://docs.google.com/forms/d/e/1FAIpQLSdxM-ixMqudOndJO-X2E6Cv6r7rlWK7btRMX9j3Ptq3IPyZQA/formResponse";
+  try {
+    await addDoc(collection(db, "feedbacks"), {
+      email: email || "anonymous",
+      message: message,
+      time: serverTimestamp()
+    });
 
-  const formData = new FormData();
-  formData.append("entry.592221968", email);      // Email field
-  formData.append("entry.1379318390", message);   // Message field
-
-  fetch(googleFormURL, {
-    method: "POST",
-    mode: "no-cors",
-    body: formData
-  })
-  .then(() => {
     alert("✅ Thank you for your feedback!");
     document.getElementById("feedbackEmail").value = "";
     document.getElementById("feedbackMsg").value = "";
     quitMenu.style.display = "none";
     feedbackForm.style.display = "none";
     document.getElementById("quitOptions").style.display = "flex";
-  })
-  .catch((err) => {
-    console.error("Error submitting feedback:", err);
+  } catch (err) {
+    console.error("Error saving feedback:", err);
     alert("⚠️ Something went wrong! Please try again later.");
-  });
+  }
 });
+
 
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
