@@ -183,40 +183,51 @@ submitFeedback.addEventListener('click', (e) => {
     return;
   }
 
-  // ---- GOOGLE FORM SUBMISSION ----
-  const googleFormURL = "https://docs.google.com/forms/d/e/1FAIpQLSdxM-ixMqudOndJO-X2E6Cv6r7rlWK7btRMX9j3Ptq3IPyZQA/formResponse";
+ submitFeedback.addEventListener('click', (e) => {
+    e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("entry.592221968", email);      // Email field
-  formData.append("entry.1379318390", message);   // Message field
+    const email = document.getElementById('feedbackEmail').value.trim();
+    const message = document.getElementById('feedbackMsg').value.trim();
 
-  fetch(googleFormURL, {
-    method: "POST",
-    mode: "no-cors",
-    body: formData
-  })
-  .then(() => {
-    alert("✅ Thank you for your feedback!");
-    document.getElementById('feedbackEmail').value = "";
-    document.getElementById('feedbackMsg').value = "";
+    if (!message) {
+      alert('Please write your feedback before submitting.');
+      return;
+    }
 
-    // Reset and close feedback form
-    quitMenu.style.display = 'none';
-    feedbackForm.style.display = 'none';
-    document.getElementById('quitOptions').style.display = 'flex';
-  })
-  .catch((err) => {
-    console.error("Error submitting feedback:", err);
-    alert("⚠️ Something went wrong! Please try again later.");
+    // ---- GOOGLE APPS SCRIPT WEB APP URL ----
+    const googleScriptURL = "https://script.google.com/macros/s/AKfycbx3AkKyqPWiCb1GRkd8ccQWqDmQnRu0N7WlQ2GxIU5NW2IiTyKPgzLAE3y5sH9Bb1hnWg/exec"; 
+
+    fetch(googleScriptURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        message: message
+      }),
+    })
+    .then(() => {
+      alert("✅ Thank you for your feedback!");
+      document.getElementById('feedbackEmail').value = "";
+      document.getElementById('feedbackMsg').value = "";
+
+      quitMenu.style.display = 'none';
+      feedbackForm.style.display = 'none';
+      document.getElementById('quitOptions').style.display = 'flex';
+    })
+    .catch((err) => {
+      console.error("Error submitting feedback:", err);
+      alert("⚠️ Something went wrong! Please try again later.");
+    });
   });
-});
-
 
   
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
