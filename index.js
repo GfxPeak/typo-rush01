@@ -1,53 +1,34 @@
-// ===== PRELOADER =====
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+const db = window.db;
+
+// ====== PRELOADER ======
 window.addEventListener('load', () => {
   const loadingOverlay = document.getElementById('loadingOverlay');
-  
-  // List of assets to preload
-  const assetsToLoad = [
-    'index.png', 
-    './fonts/super-pixel-font/SuperPixel-m2L8j.ttf',
-    './fonts/beat-word-font/BeatWordDemo-nRL20.ttf'
-  ];
+  const assetsToLoad = ['index.png'];
+  let loaded = 0;
 
-  let loadedCount = 0;
-  const totalAssets = assetsToLoad.length;
+  const img = new Image();
+  img.onload = hideLoader;
+  img.onerror = hideLoader;
+  img.src = assetsToLoad[0];
 
-  function checkAllLoaded() {
-    loadedCount++;
-    if (loadedCount >= totalAssets) {
-      setTimeout(() => {
-        if (loadingOverlay) {
-          loadingOverlay.classList.add('loaded');
-        }
-      }, 300);
+  function hideLoader() {
+    loaded++;
+    if (loaded >= assetsToLoad.length && loadingOverlay) {
+      setTimeout(() => loadingOverlay.classList.add('loaded'), 300);
     }
   }
 
-  // Preload background image
-  const img = new Image();
-  img.onload = checkAllLoaded;
-  img.onerror = checkAllLoaded;
-  img.src = assetsToLoad[0];
-
-  // Preload fonts
-  if (document.fonts) {
-    Promise.all([
-      document.fonts.load('1em SuperPixel'),
-      document.fonts.load('1em BeatWordDemo')
-    ]).then(() => {
-      checkAllLoaded();
-      checkAllLoaded();
-    }).catch(() => {
-      checkAllLoaded();
-      checkAllLoaded();
-    });
-  } else {
-    checkAllLoaded();
-    checkAllLoaded();
-  }
+  setTimeout(() => loadingOverlay?.classList.add('loaded'), 3000);
 });
 
-
+// ===== ELEMENTS =====
 const startBtn = document.getElementById('startBtn');
 const leaderboardBtn = document.getElementById('leaderboardBtn');
 const quitBtn = document.getElementById('quitBtn');
@@ -58,69 +39,39 @@ const goBtn = document.getElementById('goBtn');
 const usernameInput = document.getElementById('usernameInput');
 const lineEl = document.querySelector('.line');
 
-// --- Update hint based on music state ---
+// ===== FUNCTIONS =====
 function updateMusicHint() {
-  if (!musicHint) return;
-  
-  const musicOn = window.musicController?.isMusicOn() || false;
-  
-  if (musicOn) {
-    musicHint.classList.remove('show');
-  } else {
-    musicHint.classList.add('show');
-  }
+  const on = window.musicController?.isMusicOn() || false;
+  on ? musicHint.classList.remove('show') : musicHint.classList.add('show');
 }
 
-// --- Custom toggle handler to update hint ---
 function handleMusicToggle() {
   setTimeout(updateMusicHint, 50);
 }
 
-// --- On load ---
+// ===== MAIN =====
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🟢 DOM Content Loaded');
-  
-  // Animate tagline
-  if (lineEl) {
-    const txt = lineEl.textContent.trim();
-    lineEl.innerHTML = txt.split('').map(ch => `<span>${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
-  }
-
   updateMusicHint();
+  musicToggle.addEventListener('click', handleMusicToggle);
 
-  if (musicToggle) {
-    musicToggle.addEventListener('click', handleMusicToggle);
-  }
-
-  // Menu buttons
+  // Start Button
   startBtn.addEventListener('click', () => {
-    usernameBox.style.display = usernameBox.style.display === 'flex' ? 'none' : 'flex';
-    usernameBox.style.flexDirection = 'row';
+    usernameBox.style.display = 'flex';
     usernameInput.focus();
   });
 
   goBtn.addEventListener('click', () => {
     const name = usernameInput.value.trim();
-    if (!name) {
-      alert('Please enter your name to start.');
-      usernameInput.focus();
-      return;
-    }
+    if (!name) return alert('Enter your name first!');
     localStorage.setItem('username', name);
-    if (window.musicController) window.musicController.playClick();
-    setTimeout(() => {
-      window.location.href = 'optsc.html';
-    }, 150);
+    setTimeout(() => (window.location.href = 'optsc.html'), 150);
   });
 
   leaderboardBtn.addEventListener('click', () => {
-    if (window.musicController) window.musicController.playClick();
-    setTimeout(() => {
-      window.location.href = 'lb1.html';
-    }, 150);
+    setTimeout(() => (window.location.href = 'lb1.html'), 150);
   });
 
-  
+  // ===== CONTACT / FEEDBACK =====
   const quitMenu = document.getElementById('quitMenu');
   const closeQuit = document.getElementById('closeQuit');
   const githubBtn = document.getElementById('githubBtn');
@@ -128,134 +79,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const feedbackForm = document.getElementById('feedbackForm');
   const submitFeedback = document.getElementById('submitFeedback');
 
-  // Debug: Check if elements exist
-  console.log('🔍 Submit button found:', submitFeedback);
-
-  quitBtn.addEventListener('click', () => {
-    if (window.musicController) window.musicController.playClick();
-    quitMenu.style.display = 'flex';
-  });
-
+  quitBtn.addEventListener('click', () => (quitMenu.style.display = 'flex'));
   closeQuit.addEventListener('click', () => {
     quitMenu.style.display = 'none';
     feedbackForm.style.display = 'none';
     document.getElementById('quitOptions').style.display = 'flex';
-    
-    const quitTitle = document.querySelector('.quit-title');
-    if (quitTitle) {
-      quitTitle.textContent = 'Leaving Already?';
-    }
   });
 
-  githubBtn.addEventListener('click', () => {
-    if (window.musicController) window.musicController.playClick();
-    window.open("https://github.com/GfxPeak/typo-rush01", "_blank");
-  });
+  githubBtn.addEventListener('click', () =>
+    window.open("https://github.com/GfxPeak/typo-rush01", "_blank")
+  );
 
   feedbackBtn.addEventListener('click', () => {
-    if (window.musicController) window.musicController.playClick();
     document.getElementById('quitOptions').style.display = 'none';
     feedbackForm.style.display = 'flex';
-    
-    const quitTitle = document.querySelector('.quit-title');
-    if (quitTitle) {
-      quitTitle.textContent = 'We\'re Listening!';
-    }
   });
 
-  // ===== WEB3FORMS FEEDBACK SUBMISSION =====
-  if (submitFeedback) {
-    console.log('✅ Attaching feedback submit listener');
-    
-    submitFeedback.addEventListener('click', async (e) => {
-      e.preventDefault();
-      console.log('🚀 Submit button clicked!');
+  // ===== FIREBASE FEEDBACK SUBMISSION =====
+  submitFeedback.addEventListener('click', async (e) => {
+    e.preventDefault();
 
-      const emailInput = document.getElementById('feedbackEmail');
-      const messageInput = document.getElementById('feedbackMsg');
-      
-      console.log('📧 Email input:', emailInput);
-      console.log('💬 Message input:', messageInput);
+    const email = document.getElementById('feedbackEmail').value.trim();
+    const message = document.getElementById('feedbackMsg').value.trim();
 
-      const email = emailInput ? emailInput.value.trim() : '';
-      const message = messageInput ? messageInput.value.trim() : '';
+    if (!message) {
+      alert("Please write your feedback before submitting.");
+      return;
+    }
 
-      console.log('Email value:', email);
-      console.log('Message value:', message);
+    try {
+      await addDoc(collection(db, "feedbacks"), {
+        email: email || "anonymous@typorush.com",
+        message: message,
+        timestamp: serverTimestamp()
+      });
 
-      if (!message) {
-        alert('Please write your feedback before submitting.');
-        return;
-      }
+      alert("✅ Thank you for your feedback!");
+      document.getElementById('feedbackEmail').value = "";
+      document.getElementById('feedbackMsg').value = "";
+      quitMenu.style.display = 'none';
+      feedbackForm.style.display = 'none';
+      document.getElementById('quitOptions').style.display = 'flex';
 
-      // Disable button and show loading
-      submitFeedback.disabled = true;
-      submitFeedback.textContent = 'Sending...';
-      console.log('⏳ Sending to Web3Forms...');
-
-      try {
-        const payload = {
-          access_key: "34ccbc99-ea9d-4838-8861-7033676f1a12",
-          email: email || "anonymous@typorush.com",
-          message: message,
-          subject: "New Typo Rush Feedback",
-          from_name: "Typo Rush Feedback Form"
-        };
-        
-        console.log('📦 Payload:', payload);
-
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        console.log('📡 Response status:', response.status);
-        const result = await response.json();
-        console.log('📨 Response data:', result);
-
-        if (result.success) {
-          console.log('✅ SUCCESS!');
-          alert("✅ Thank you for your feedback!");
-          
-          // Clear form
-          if (emailInput) emailInput.value = "";
-          if (messageInput) messageInput.value = "";
-
-          // Close feedback form
-          quitMenu.style.display = 'none';
-          feedbackForm.style.display = 'none';
-          document.getElementById('quitOptions').style.display = 'flex';
-          
-          // Restore title
-          const quitTitle = document.querySelector('.quit-title');
-          if (quitTitle) {
-            quitTitle.textContent = 'Leaving Already?';
-          }
-        } else {
-          console.log('❌ FAILED:', result);
-          alert("⚠️ Failed to send message. Please try again.");
-        }
-
-      } catch (error) {
-        console.error("❌ ERROR:", error);
-        alert("⚠️ An error occurred. Please try again later.");
-      } finally {
-        // Reset button
-        submitFeedback.disabled = false;
-        submitFeedback.textContent = 'Submit';
-        console.log('🔄 Button reset');
-      }
-    });
-  } else {
-    console.error('❌ Submit button NOT FOUND!');
-  }
-
-  
-  usernameInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') goBtn.click();
+    } catch (err) {
+      console.error("Error saving feedback:", err);
+      alert("⚠️ Error saving feedback. Check console for details.");
+    }
   });
 });
