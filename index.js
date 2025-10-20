@@ -180,9 +180,9 @@ import {
 
 submitFeedback.addEventListener('click', async () => {
   const email = document.getElementById('feedbackEmail').value.trim();
-  const message = document.getElementById('feedbackMsg').value.trim();
+  const fb = document.getElementById('feedbackMsg').value.trim();
 
-  if (!message) {
+  if (!fb) {
     alert('Please write your feedback before submitting.');
     return;
   }
@@ -191,11 +191,10 @@ submitFeedback.addEventListener('click', async () => {
     const db = window.db;
     const feedbackRef = collection(db, "feedback");
 
-    // Add feedback (email optional)
+    // Add feedback (email optional, no timestamp)
     await addDoc(feedbackRef, {
       email: email || null,
-      feedback: message,
-      timestamp: new Date()
+      FB: fb
     });
 
     alert('✅ Thank you for your feedback!');
@@ -204,7 +203,7 @@ submitFeedback.addEventListener('click', async () => {
     alert('❌ Failed to send feedback. Please try again.');
   }
 
-  // Reset UI
+  // Reset form and hide
   document.getElementById('feedbackEmail').value = '';
   document.getElementById('feedbackMsg').value = '';
   quitMenu.style.display = 'none';
@@ -218,6 +217,7 @@ submitFeedback.addEventListener('click', async () => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
