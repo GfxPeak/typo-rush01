@@ -72,8 +72,10 @@
       </div>
     </div>
   </div>
+<!-- Scripts -->
+<script src="music.js"></script>
 
-<!-- Firebase Config (same as leaderboard) -->
+<!-- Firebase Config and App Initialization -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
@@ -89,13 +91,15 @@
 
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
+
+  // Load main script AFTER firebase setup
+  import "./index.js";
 </script>
-  <!-- scripts -->
-   <script src="music.js"></script>
-  <script src="index.js"></script>
+  
 </body>
 </html>
  
+
 
 
 
