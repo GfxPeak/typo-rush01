@@ -8,9 +8,7 @@
 </head>
 
 <body>
-  <!-- Background -->
-  
-  <!-- Loading Screen - -->
+  <!-- Loading Overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loader-content">
       <div class="loader-spinner"></div>
@@ -18,41 +16,35 @@
     </div>
   </div>
 
-
-  <img src="index.png" alt="neon clouds background" class="bg-img" />
+  <img src="index.png" alt="background" class="bg-img" />
   <div class="overlay"></div>
 
-  <!-- Title -->
   <div class="title">Typo Rush</div>
 
-  <!-- Music toggle + hint -->
-  <div class="music-wrap" aria-live="polite">
-    <button class="music-btn" id="musicToggle" aria-pressed="false" aria-label="Toggle music">
-      Music: Off
-    </button>
-    <div id="musicHint" class="music-hint" aria-hidden="true">UNMUTE SOUND</div>
+  <div class="music-wrap">
+    <button class="music-btn" id="musicToggle">Music: Off</button>
+    <div id="musicHint" class="music-hint">UNMUTE SOUND</div>
   </div>
 
-  <!-- Main center area -->
-  <div class="center-area" role="main" aria-label="Main menu">
-    <div class="buttons" aria-hidden="false">
+  <div class="center-area">
+    <div class="buttons">
       <button id="startBtn">Start</button>
       <button id="leaderboardBtn">Leaderboard</button>
       <button id="quitBtn">Contact</button>
     </div>
 
-    <!-- Tagline -->
-    <div class="tagline-box" aria-hidden="false">
+    <div class="tagline-box">
       <div class="line">Type Fast, Beat The Clock!</div>
     </div>
   </div>
 
-  <!-- Username input (hidden until Start clicked) -->
-  <div class="username-box" id="usernameBox" aria-live="polite">
-    <input id="usernameInput" type="text" placeholder="Enter your name" aria-label="Your name">
+  <!-- Username -->
+  <div class="username-box" id="usernameBox">
+    <input id="usernameInput" type="text" placeholder="Enter your name">
     <button class="go" id="goBtn">Go</button>
   </div>
-  <!-- Quit Menu Overlay -->
+
+  <!-- Quit Menu -->
   <div id="quitMenu" class="quit-overlay" style="display:none;">
     <div class="quit-box">
       <button class="close-btn" id="closeQuit">✕</button>
@@ -62,7 +54,6 @@
         <button id="feedbackBtn">Feedback</button>
       </div>
 
-      <!-- Feedback Form -->
       <div id="feedbackForm" class="feedback-form" style="display:none;">
         <input type="email" id="feedbackEmail" placeholder="Your Email (optional)" />
         <textarea id="feedbackMsg" placeholder="Write your feedback or complaint..."></textarea>
@@ -73,12 +64,7 @@
     </div>
   </div>
 
-
-
-  <!-- scripts -->
-   <script src="music.js"></script>
-  <script src="index.js"></script>
+  <script src="music.js"></script>
+  <script type="module" src="index.js"></script>
 </body>
 </html>
- 
-
