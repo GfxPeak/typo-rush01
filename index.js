@@ -172,56 +172,64 @@ feedbackBtn.addEventListener('click', () => {
   }
 });
 
-import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
+// ===== FIREBASE IMPORTS =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+// ===== FIREBASE CONFIG =====
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyBhCg2BMWcPgc44snQs9o5coDUEwIZyZjI",
+    authDomain: "typo-rush-3551b.firebaseapp.com",
+    projectId: "typo-rush-3551b",
+    storageBucket: "typo-rush-3551b.firebasestorage.app",
+    messagingSenderId: "769554999839",
+    appId: "1:769554999839:web:8cd7f9b73040c9546bc32a"
 };
 
-// Initialize Firebase (if not already)
+// Initialize Firebase (only once)
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ---- FEEDBACK SUBMISSION ----
+// ===== FEEDBACK FORM SUBMISSION =====
+const submitFeedback = document.getElementById("submitFeedback"); // your submit button ID
+
 submitFeedback.addEventListener("click", async () => {
   const email = document.getElementById("feedbackEmail").value.trim();
   const message = document.getElementById("feedbackMsg").value.trim();
 
   if (!message) {
-    alert("Please write your feedback before submitting.");
+    alert("⚠️ Please write your feedback before submitting!");
     return;
   }
 
   try {
+    // Save data to Firestore
     await addDoc(collection(db, "feedbacks"), {
       email: email || "anonymous",
       message: message,
-      time: serverTimestamp()
+      timestamp: serverTimestamp(),
     });
 
+    // Success feedback to user
     alert("✅ Thank you for your feedback!");
     document.getElementById("feedbackEmail").value = "";
     document.getElementById("feedbackMsg").value = "";
+
+    // Optional: close feedback form
     quitMenu.style.display = "none";
     feedbackForm.style.display = "none";
     document.getElementById("quitOptions").style.display = "flex";
   } catch (err) {
-    console.error("Error saving feedback:", err);
+    console.error("Error submitting feedback:", err);
     alert("⚠️ Something went wrong! Please try again later.");
   }
 });
-
 
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
