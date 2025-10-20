@@ -145,7 +145,7 @@ closeQuit.addEventListener('click', () => {
 
 githubBtn.addEventListener('click', () => {
   if (window.musicController) window.musicController.playClick();
-  window.location.href = "https://github.com/GfxPeak/typo-rush01"; // 🔧 replace with your actual GitHub
+  window.open("https://github.com/GfxPeak/typo-rush01", "_blank");
 });
 
 feedbackBtn.addEventListener('click', () => {
@@ -178,3 +178,4 @@ submitFeedback.addEventListener('click', () => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
