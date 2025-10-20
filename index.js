@@ -1,6 +1,12 @@
+// ===== TEST IF SCRIPT LOADS =====
+console.log("🟢🟢🟢 SCRIPT IS RUNNING!");
+console.log("🟢🟢🟢 index.js LOADED SUCCESSFULLY!");
+
 // ===== FIREBASE IMPORTS =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+console.log("✅ Firebase modules imported");
 
 // ===== FIREBASE CONFIG =====
 const firebaseConfig = {
@@ -12,14 +18,18 @@ const firebaseConfig = {
     appId: "1:769554999839:web:8cd7f9b73040c9546bc32a"
 };
 
+console.log("⚙️ Initializing Firebase...");
+
 // Initialize Firebase
 let app, db;
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
-  console.log("✅ Firebase initialized successfully");
+  console.log("✅✅✅ FIREBASE CONNECTED SUCCESSFULLY!");
+  console.log("Database object:", db);
 } catch (error) {
-  console.error("❌ Firebase initialization error:", error);
+  console.error("❌❌❌ FIREBASE INIT ERROR:", error);
+  alert("Firebase Error: " + error.message);
 }
 
 // ===== DOM ELEMENTS =====
@@ -41,8 +51,11 @@ const feedbackBtn = document.getElementById('feedbackBtn');
 const feedbackForm = document.getElementById('feedbackForm');
 const submitFeedback = document.getElementById('submitFeedback');
 
+console.log("✅ DOM elements loaded");
+
 // ===== PRELOADER =====
 window.addEventListener('load', () => {
+  console.log("📦 Page loaded, starting preloader");
   const assetsToLoad = [
     'index.png', 
     './fonts/super-pixel-font/SuperPixel-m2L8j.ttf',
@@ -54,9 +67,11 @@ window.addEventListener('load', () => {
 
   function checkAllLoaded() {
     loadedCount++;
+    console.log(`Asset loaded: ${loadedCount}/${totalAssets}`);
     if (loadedCount >= totalAssets) {
       setTimeout(() => {
         if (loadingOverlay) loadingOverlay.classList.add('loaded');
+        console.log("✅ All assets loaded");
       }, 300);
     }
   }
@@ -95,6 +110,8 @@ function handleMusicToggle() {
 
 // ===== TAGLINE ANIMATION =====
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("🎯 DOM Content Loaded - Setting up event listeners");
+  
   if (lineEl) {
     const txt = lineEl.textContent.trim();
     lineEl.innerHTML = txt.split('').map(ch => `<span>${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
@@ -104,12 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== MENU BUTTONS =====
   startBtn.addEventListener('click', () => {
+    console.log("▶️ Start button clicked");
     usernameBox.style.display = usernameBox.style.display === 'flex' ? 'none' : 'flex';
     usernameBox.style.flexDirection = 'row';
     usernameInput.focus();
   });
 
   goBtn.addEventListener('click', () => {
+    console.log("🚀 Go button clicked");
     const name = usernameInput.value.trim();
     if (!name) {
       alert('Please enter your name to start.');
@@ -122,16 +141,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   leaderboardBtn.addEventListener('click', () => {
+    console.log("🏆 Leaderboard button clicked");
     if (window.musicController) window.musicController.playClick();
     setTimeout(() => window.location.href = 'lb1.html', 150);
   });
 
   quitBtn.addEventListener('click', () => {
+    console.log("📞 Contact button clicked");
     if (window.musicController) window.musicController.playClick();
     quitMenu.style.display = 'flex';
   });
 
   closeQuit.addEventListener('click', () => {
+    console.log("❌ Close quit menu");
     quitMenu.style.display = 'none';
     feedbackForm.style.display = 'none';
     document.getElementById('quitOptions').style.display = 'flex';
@@ -140,11 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   githubBtn.addEventListener('click', () => {
+    console.log("🐙 GitHub button clicked");
     if (window.musicController) window.musicController.playClick();
     window.open("https://github.com/GfxPeak/typo-rush01", "_blank");
   });
 
   feedbackBtn.addEventListener('click', () => {
+    console.log("💬 Feedback button clicked");
     if (window.musicController) window.musicController.playClick();
     document.getElementById('quitOptions').style.display = 'none';
     feedbackForm.style.display = 'flex';
@@ -154,20 +178,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== FEEDBACK SUBMISSION =====
   submitFeedback.addEventListener('click', async () => {
-    console.log("🔵 Submit button clicked!");
+    console.log("🔵🔵🔵 SUBMIT BUTTON CLICKED!");
     
     const emailInput = document.getElementById('feedbackEmail');
     const messageInput = document.getElementById('feedbackMsg');
     
-    console.log("Email input found:", !!emailInput);
-    console.log("Message input found:", !!messageInput);
+    console.log("Email input exists:", !!emailInput);
+    console.log("Message input exists:", !!messageInput);
     
     const email = emailInput.value.trim() || "anonymous";
     const message = messageInput.value.trim();
     
-    console.log("Email value:", email);
-    console.log("Message value:", message);
-    console.log("Message length:", message.length);
+    console.log("📧 Email:", email);
+    console.log("💬 Message:", message);
+    console.log("📏 Message length:", message.length);
 
     if (!message) {
       console.log("❌ No message entered");
@@ -176,17 +200,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Check if Firebase is initialized
-    console.log("Checking Firebase...");
+    console.log("🔍 Checking Firebase connection...");
     console.log("App exists:", !!app);
     console.log("DB exists:", !!db);
     
     if (!db) {
-      console.error("❌ Firestore database not initialized");
+      console.error("❌❌❌ DATABASE NOT INITIALIZED!");
       alert("⚠️ Database connection error. Please refresh the page.");
       return;
     }
 
-    console.log("📤 Starting submission process...");
+    console.log("✅ Firebase is connected, preparing data...");
 
     // Disable button to prevent double-click
     submitFeedback.disabled = true;
@@ -200,14 +224,15 @@ document.addEventListener('DOMContentLoaded', () => {
         submittedAt: Date.now()
       };
 
-      console.log("📦 Data prepared:", feedbackData);
-      console.log("📍 Collection name: feedbacks");
+      console.log("📦 Feedback data prepared:", feedbackData);
+      console.log("📍 Target collection: 'feedbacks'");
+      console.log("🚀🚀🚀 Calling Firestore addDoc...");
 
       // Save to Firestore
-      console.log("🚀 Calling addDoc...");
       const docRef = await addDoc(collection(db, "feedbacks"), feedbackData);
       
-      console.log("✅✅✅ SUCCESS! Document ID:", docRef.id);
+      console.log("✅✅✅ SUCCESS!!!");
+      console.log("✅✅✅ Document ID:", docRef.id);
       console.log("✅✅✅ Feedback saved to Firestore!");
 
       alert("✅ Thank you for your feedback!");
@@ -221,18 +246,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (quitTitle) quitTitle.textContent = "Leaving Already?";
 
     } catch (err) {
-      console.error("❌❌❌ FIRESTORE ERROR:", err);
+      console.error("❌❌❌ FIRESTORE ERROR:");
+      console.error("Error object:", err);
       console.error("Error name:", err.name);
       console.error("Error code:", err.code);
       console.error("Error message:", err.message);
-      console.error("Full error object:", JSON.stringify(err, null, 2));
+      console.error("Full error:", JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
       
       // More specific error messages
       if (err.code === 'permission-denied') {
-        alert("⚠️ PERMISSION DENIED!\n\nGo to Firebase Console → Firestore Database → Rules\n\nChange rules to:\n\nallow read, write: if true;");
+        console.error("🚫 PERMISSION DENIED - Check Firestore Rules!");
+        alert("⚠️ PERMISSION DENIED!\n\nYou need to fix Firestore Security Rules:\n\n1. Go to Firebase Console\n2. Firestore Database → Rules\n3. Change to:\n\nallow read, write: if true;");
       } else if (err.code === 'unavailable') {
+        console.error("🌐 Network unavailable");
         alert("⚠️ Network error. Check your internet connection.");
       } else if (err.code === 'not-found') {
+        console.error("❓ Firestore not found");
         alert("⚠️ Firestore database not found. Make sure Firestore is enabled in Firebase Console.");
       } else {
         alert("⚠️ Error: " + err.message + "\n\nCheck browser console (F12) for details.");
@@ -241,11 +270,17 @@ document.addEventListener('DOMContentLoaded', () => {
       // Re-enable button
       submitFeedback.disabled = false;
       submitFeedback.textContent = "Submit";
+      console.log("🔄 Submit button re-enabled");
     }
   });
 
   // ===== ENTER KEY FOR USERNAME =====
   usernameInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') goBtn.click();
+    if (e.key === 'Enter') {
+      console.log("⏎ Enter key pressed in username");
+      goBtn.click();
+    }
   });
+
+  console.log("✅✅✅ ALL EVENT LISTENERS SET UP!");
 });
