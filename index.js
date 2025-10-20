@@ -191,10 +191,17 @@ submitFeedback.addEventListener('click', async () => {
     const db = window.db;
     const feedbackRef = collection(db, "feedback");
 
-    // Add feedback (email optional, no timestamp)
+    // Generate current date & time
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString();
+    const formattedTime = now.toLocaleTimeString();
+
+    // Add feedback (email optional)
     await addDoc(feedbackRef, {
       email: email || null,
-      FB: fb
+      FB: fb,
+      date: formattedDate,
+      time: formattedTime
     });
 
     alert('✅ Thank you for your feedback!');
@@ -212,11 +219,13 @@ submitFeedback.addEventListener('click', async () => {
 });
 
 
+
   
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
