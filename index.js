@@ -278,4 +278,5 @@ document.addEventListener('DOMContentLoaded', () => {
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
+  
 });
