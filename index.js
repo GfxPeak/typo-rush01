@@ -178,6 +178,8 @@ import {
   addDoc
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+const submitFeedback = document.getElementById('submitFeedback');
+
 submitFeedback.addEventListener('click', async () => {
   const email = document.getElementById('feedbackEmail').value.trim();
   const fb = document.getElementById('feedbackMsg').value.trim();
@@ -189,14 +191,14 @@ submitFeedback.addEventListener('click', async () => {
 
   try {
     const db = window.db;
-    const feedbackRef = collection(db, "feedback");
+    if (!db) throw new Error('Firestore not initialized.');
 
-    // Generate current date & time
+    const feedbackRef = collection(db, 'feedback');
+
     const now = new Date();
     const formattedDate = now.toLocaleDateString();
     const formattedTime = now.toLocaleTimeString();
 
-    // Add feedback (email optional)
     await addDoc(feedbackRef, {
       email: email || null,
       FB: fb,
@@ -205,26 +207,17 @@ submitFeedback.addEventListener('click', async () => {
     });
 
     alert('✅ Thank you for your feedback!');
-  } catch (error) {
-    console.error("Error sending feedback:", error);
-    alert('❌ Failed to send feedback. Please try again.');
+  } catch (err) {
+    console.error('Error submitting feedback:', err);
+    alert('❌ Failed to submit feedback. Check console.');
   }
-
-  // Reset form and hide
-  document.getElementById('feedbackEmail').value = '';
-  document.getElementById('feedbackMsg').value = '';
-  quitMenu.style.display = 'none';
-  feedbackForm.style.display = 'none';
-  document.getElementById('quitOptions').style.display = 'flex';
 });
-
-
-
   
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
