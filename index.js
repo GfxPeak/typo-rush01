@@ -172,51 +172,50 @@ feedbackBtn.addEventListener('click', () => {
   }
 });
 
+submitFeedback.addEventListener('click', (e) => {
+  e.preventDefault();
 
- submitFeedback.addEventListener('click', (e) => {
-    e.preventDefault();
+  const email = document.getElementById('feedbackEmail').value.trim();
+  const message = document.getElementById('feedbackMsg').value.trim();
 
-    const email = document.getElementById('feedbackEmail').value.trim();
-    const message = document.getElementById('feedbackMsg').value.trim();
+  if (!message) {
+    alert('Please write your feedback before submitting.');
+    return;
+  }
 
-    if (!message) {
-      alert('Please write your feedback before submitting.');
-      return;
-    }
+  // ---- GOOGLE APPS SCRIPT WEB APP URL ----
+  const googleScriptURL = "https://script.google.com/macros/s/AKfycbx3AkKyqPWiCb1GRkd8ccQWqDmQnRu0N7WlQ2GxIU5NW2IiTyKPgzLAE3y5sH9Bb1hnWg/exec";
 
-    // ---- GOOGLE APPS SCRIPT WEB APP URL ----
-    const googleScriptURL = "https://script.google.com/macros/s/AKfycbx3AkKyqPWiCb1GRkd8ccQWqDmQnRu0N7WlQ2GxIU5NW2IiTyKPgzLAE3y5sH9Bb1hnWg/exec"; 
+  fetch(googleScriptURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      message: message
+    }),
+  })
+  .then(() => {
+    alert("✅ Thank you for your feedback!");
+    document.getElementById('feedbackEmail').value = "";
+    document.getElementById('feedbackMsg').value = "";
 
-    fetch(googleScriptURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        message: message
-      }),
-    })
-    .then(() => {
-      alert("✅ Thank you for your feedback!");
-      document.getElementById('feedbackEmail').value = "";
-      document.getElementById('feedbackMsg').value = "";
-
-      quitMenu.style.display = 'none';
-      feedbackForm.style.display = 'none';
-      document.getElementById('quitOptions').style.display = 'flex';
-    })
-    .catch((err) => {
-      console.error("Error submitting feedback:", err);
-      alert("⚠️ Something went wrong! Please try again later.");
-    });
+    quitMenu.style.display = 'none';
+    feedbackForm.style.display = 'none';
+    document.getElementById('quitOptions').style.display = 'flex';
+  })
+  .catch((err) => {
+    console.error("Error submitting feedback:", err);
+    alert("⚠️ Something went wrong! Please try again later.");
   });
+});
 
-  
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
