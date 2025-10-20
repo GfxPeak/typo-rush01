@@ -193,42 +193,77 @@ const db = getFirestore(app);
 // ===== FEEDBACK FORM SUBMISSION =====
 const submitFeedback = document.getElementById("submitFeedback"); // your submit button ID
 
-submitFeedback.addEventListener("click", async () => {
-  const email = document.getElementById("feedbackEmail").value.trim();
-  const message = document.getElementById("feedbackMsg").value.trim();
+  // ===== WEB3FORMS FEEDBACK SUBMISSION =====
+  submitFeedback.addEventListener('click', async (e) => {
+    e.preventDefault();
 
-  if (!message) {
-    alert("⚠️ Please write your feedback before submitting!");
-    return;
-  }
+    const email = document.getElementById('feedbackEmail').value.trim();
+    const message = document.getElementById('feedbackMsg').value.trim();
 
-  try {
-    // Save data to Firestore
-    await addDoc(collection(db, "feedbacks"), {
-      email: email || "anonymous",
-      message: message,
-      timestamp: serverTimestamp(),
-    });
+    if (!message) {
+      alert('Please write your feedback before submitting.');
+      return;
+    }
 
-    // Success feedback to user
-    alert("✅ Thank you for your feedback!");
-    document.getElementById("feedbackEmail").value = "";
-    document.getElementById("feedbackMsg").value = "";
+    // Disable button and show loading
+    submitFeedback.disabled = true;
+    submitFeedback.textContent = 'Sending...';
 
-    // Optional: close feedback form
-    quitMenu.style.display = "none";
-    feedbackForm.style.display = "none";
-    document.getElementById("quitOptions").style.display = "flex";
-  } catch (err) {
-    console.error("Error submitting feedback:", err);
-    alert("⚠️ Something went wrong! Please try again later.");
-  }
-});
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          access_key: "34ccbc99-ea9d-4838-8861-7033676f1a12",
+          email: email || "anonymous@typorush.com",
+          message: message,
+          subject: "New Typo Rush Feedback",
+          from_name: "Typo Rush Feedback Form"
+        })
+      });
 
+      const result = await response.json();
+
+      if (result.success) {
+        alert("✅ Thank you for your feedback!");
+        
+        // Clear form
+        document.getElementById('feedbackEmail').value = "";
+        document.getElementById('feedbackMsg').value = "";
+
+        // Close feedback form
+        quitMenu.style.display = 'none';
+        feedbackForm.style.display = 'none';
+        document.getElementById('quitOptions').style.display = 'flex';
+        
+        // Restore title
+        const quitTitle = document.querySelector('.quit-title');
+        if (quitTitle) {
+          quitTitle.textContent = 'Leaving Already?';
+        }
+      } else {
+        alert("⚠️ Failed to send message. Please try again.");
+      }
+
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      alert("⚠️ An error occurred. Please try again later.");
+    } finally {
+      // Reset button
+      submitFeedback.disabled = false;
+      submitFeedback.textContent = 'Submit';
+    }
+  });
+
+  
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+  
 
 
 
