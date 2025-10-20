@@ -1,4 +1,4 @@
-// scoresc.js — navigation + persistent music + stats
+// scoresc.js — navigation + persistent music + stats + leaderboard saving
 window.addEventListener('load', () => {
   const loadingOverlay = document.getElementById('loadingOverlay');
   
@@ -26,7 +26,7 @@ window.addEventListener('load', () => {
   // Preload background image
   const img = new Image();
   img.onload = checkAllLoaded;
-  img.onerror = checkAllLoaded; // Still hide loader even if image fails
+  img.onerror = checkAllLoaded; 
   img.src = assetsToLoad[0];
 
   // Preload fonts
@@ -42,26 +42,22 @@ window.addEventListener('load', () => {
       checkAllLoaded();
     });
   } else {
-    // Fallback if Font Loading API not supported
     checkAllLoaded();
     checkAllLoaded();
   }
 });
+
 // Elements
 const musicToggle = document.getElementById('musicToggle');
 const musicHint = document.getElementById('musicHint');
 const restartBtn = document.getElementById("restartBtn");
 const menuBtn = document.getElementById("menuBtn");
+const leaderboardBtn = document.getElementById("leaderboardBtn");
 
-// ===== MUSIC HANDLING (matching optsc.js pattern) =====
-
-// --- Update hint based on music state ---
+// ===== MUSIC HANDLING =====
 function updateMusicHint() {
   if (!musicHint) return;
-  
-  // Check if music is on via the global controller
   const musicOn = window.musicController?.isMusicOn() || false;
-  
   if (musicOn) {
     musicHint.classList.remove('show');
   } else {
@@ -69,21 +65,15 @@ function updateMusicHint() {
   }
 }
 
-// --- Custom toggle handler to update hint ---
 function handleMusicToggle() {
-  // The music.js already handles the toggle, we just update the hint
-  setTimeout(updateMusicHint, 50); // Small delay to let music.js update first
+  setTimeout(updateMusicHint, 50);
 }
 
-// --- On page load ---
+// ===== ON PAGE LOAD =====
 window.addEventListener('DOMContentLoaded', () => {
-  // Resume music if it was playing
   if (window.musicController) window.musicController.resumeMusicFromMenu();
-  
-  // Update hint based on current music state
   updateMusicHint();
-  
-  // Add listener to update hint when music is toggled
+
   if (musicToggle) {
     musicToggle.addEventListener('click', handleMusicToggle);
   }
@@ -110,23 +100,64 @@ window.addEventListener('DOMContentLoaded', () => {
   if (descText) {
     descText.textContent = `Great job, ${playerName}! Here's your final performance.`;
   }
+
+  // Save score to Firebase automatically
+  saveScoreToFirebase(playerName, typingSpeed);
 });
+
+// ===== FIREBASE SAVE FUNCTION =====
+async function saveScoreToFirebase(name, lps) {
+  if (!name || !window.db) return;
+
+  try {
+    const { collection, addDoc } = await import(
+      "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"
+    );
+
+    const now = new Date();
+
+    const scoreData = {
+      name: name,
+      lps: parseFloat(lps),
+      // Human-readable time
+      submittedAt: now.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      }),
+      // ISO timestamp for internal use
+      timestamp: now.toISOString()
+    };
+
+    await addDoc(collection(window.db, "leaderboard"), scoreData);
+    console.log("✅ Score saved to Firebase:", scoreData);
+  } catch (err) {
+    console.error("❌ Failed to save score:", err);
+  }
+}
 
 // ===== BUTTONS =====
 restartBtn.addEventListener("click", () => {
-  window.location.href = "optsc.html";
+  if (window.musicController) window.musicController.playClick();
+  setTimeout(() => {
+    window.location.href = "optsc.html";
+  }, 150);
 });
 
 leaderboardBtn.addEventListener('click', () => {
-    if (window.musicController) window.musicController.playClick();
-    setTimeout(() => {
-      window.location.href = 'lb1.html';
-    }, 150); // small delay so the sound plays fully
-  });
+  if (window.musicController) window.musicController.playClick();
+  setTimeout(() => {
+    window.location.href = 'lb1.html';
+  }, 150);
+});
 
 menuBtn.addEventListener("click", () => {
   if (window.musicController) window.musicController.playClick();
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 150); // small delay so the sound plays fully
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 150);
 });
