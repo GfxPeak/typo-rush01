@@ -172,16 +172,6 @@ feedbackBtn.addEventListener('click', () => {
   }
 });
 
-submitFeedback.addEventListener('click', (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById('feedbackEmail').value.trim();
-  const message = document.getElementById('feedbackMsg').value.trim();
-
-  if (!message) {
-    alert('Please write your feedback before submitting.');
-    return;
-  }
 
  submitFeedback.addEventListener('click', (e) => {
     e.preventDefault();
@@ -227,6 +217,7 @@ submitFeedback.addEventListener('click', (e) => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
