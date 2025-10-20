@@ -13,8 +13,14 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+let app, db;
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  console.log("✅ Firebase initialized successfully");
+} catch (error) {
+  console.error("❌ Firebase initialization error:", error);
+}
 
 // ===== DOM ELEMENTS =====
 const loadingOverlay = document.getElementById('loadingOverlay');
@@ -156,9 +162,32 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Check if Firebase is initialized
+    if (!db) {
+      console.error("❌ Firestore database not initialized");
+      alert("⚠️ Database connection error. Please check console.");
+      return;
+    }
+
+    console.log("📤 Attempting to submit feedback...");
+    console.log("Email:", email);
+    console.log("Message:", message);
+
     try {
-      // Save to Firestore without timestamp
-      await addDoc(collection(db, "feedbacks"), { email, message });
+      // Add timestamp
+      const feedbackData = {
+        email: email,
+        message: message,
+        timestamp: new Date().toISOString(),
+        submittedAt: Date.now()
+      };
+
+      console.log("Data to submit:", feedbackData);
+
+      // Save to Firestore
+      const docRef = await addDoc(collection(db, "feedbacks"), feedbackData);
+      
+      console.log("✅ Feedback submitted successfully! Doc ID:", docRef.id);
 
       alert("✅ Thank you for your feedback!");
       document.getElementById('feedbackEmail').value = "";
@@ -171,8 +200,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (quitTitle) quitTitle.textContent = "Leaving Already?";
 
     } catch (err) {
-      console.error("Error submitting feedback:", err);
-      alert("⚠️ Something went wrong! Please try again later.");
+      console.error("❌ Error submitting feedback:", err);
+      console.error("Error code:", err.code);
+      console.error("Error message:", err.message);
+      
+      // More specific error messages
+      if (err.code === 'permission-denied') {
+        alert("⚠️ Permission denied. Please check Firestore security rules.");
+      } else if (err.code === 'unavailable') {
+        alert("⚠️ Network error. Please check your internet connection.");
+      } else {
+        alert("⚠️ Something went wrong! Error: " + err.message);
+      }
     }
   });
 
