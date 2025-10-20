@@ -172,54 +172,29 @@ feedbackBtn.addEventListener('click', () => {
   }
 });
 
-// ====== FIREBASE FEEDBACK SUBMISSION ======
-import {
-  collection,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-const submitFeedback = document.getElementById('submitFeedback');
-
-submitFeedback.addEventListener('click', async () => {
+submitFeedback.addEventListener('click', () => {
   const email = document.getElementById('feedbackEmail').value.trim();
-  const fb = document.getElementById('feedbackMsg').value.trim();
+  const message = document.getElementById('feedbackMsg').value.trim();
 
-  if (!fb) {
+  if (!message) {
     alert('Please write your feedback before submitting.');
     return;
   }
 
-  try {
-    const db = window.db;
-    if (!db) throw new Error('Firestore not initialized.');
+  // Send via mailto (simple, no backend)
+  const mailtoLink = `mailto:your@email.com?subject=TypoRush Feedback from ${encodeURIComponent(email || 'anonymous')}&body=${encodeURIComponent(message)}`;
+  window.location.href = mailtoLink;
 
-    const feedbackRef = collection(db, 'feedback');
-
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString();
-    const formattedTime = now.toLocaleTimeString();
-
-    await addDoc(feedbackRef, {
-      email: email || null,
-      FB: fb,
-      date: formattedDate,
-      time: formattedTime
-    });
-
-    alert('✅ Thank you for your feedback!');
-  } catch (err) {
-    console.error('Error submitting feedback:', err);
-    alert('❌ Failed to submit feedback. Check console.');
-  }
+  alert('Thank you for your feedback!');
+  quitMenu.style.display = 'none';
+  feedbackForm.style.display = 'none';
+  document.getElementById('quitOptions').style.display = 'flex';
 });
+
   
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
-
-
-
-
 
 
