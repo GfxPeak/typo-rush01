@@ -172,7 +172,13 @@ feedbackBtn.addEventListener('click', () => {
   }
 });
 
-submitFeedback.addEventListener('click', () => {
+// ====== FIREBASE FEEDBACK SUBMISSION ======
+import {
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+submitFeedback.addEventListener('click', async () => {
   const email = document.getElementById('feedbackEmail').value.trim();
   const message = document.getElementById('feedbackMsg').value.trim();
 
@@ -181,20 +187,37 @@ submitFeedback.addEventListener('click', () => {
     return;
   }
 
-  // Send via mailto (simple, no backend)
-  const mailtoLink = `mailto:your@email.com?subject=TypoRush Feedback from ${encodeURIComponent(email || 'anonymous')}&body=${encodeURIComponent(message)}`;
-  window.location.href = mailtoLink;
+  try {
+    const db = window.db;
+    const feedbackRef = collection(db, "feedback");
 
-  alert('Thank you for your feedback!');
+    // Add feedback (email optional)
+    await addDoc(feedbackRef, {
+      email: email || null,
+      feedback: message,
+      timestamp: new Date()
+    });
+
+    alert('✅ Thank you for your feedback!');
+  } catch (error) {
+    console.error("Error sending feedback:", error);
+    alert('❌ Failed to send feedback. Please try again.');
+  }
+
+  // Reset UI
+  document.getElementById('feedbackEmail').value = '';
+  document.getElementById('feedbackMsg').value = '';
   quitMenu.style.display = 'none';
   feedbackForm.style.display = 'none';
   document.getElementById('quitOptions').style.display = 'flex';
 });
+
 
   
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
