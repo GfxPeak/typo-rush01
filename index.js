@@ -171,45 +171,65 @@ feedbackBtn.addEventListener('click', () => {
     quitTitle.textContent = 'Leaving Already?';
   }
 });
-submitFeedback.addEventListener('click', (e) => {
+
+
+// Replace your submitFeedback event listener with this:
+
+submitFeedback.addEventListener('click', async (e) => {
   e.preventDefault();
 
   const email = document.getElementById('feedbackEmail').value.trim();
   const message = document.getElementById('feedbackMsg').value.trim();
 
   if (!message) {
-    alert("Please write your feedback before submitting.");
+    alert('Please write your feedback before submitting.');
     return;
   }
+
+  // Show loading state
+  submitFeedback.disabled = true;
+  submitFeedback.textContent = 'Sending...';
+
+  // ---- SEND TO GOOGLE FORM ----
+  const googleFormURL = "https://docs.google.com/forms/d/e/1FAIpQLSdxM-ixMqudOndJO-X2E6Cv6r7rlWK7btRMX9j3Ptq3IPyZQA/formResponse";
 
   const formData = new FormData();
   formData.append("entry.592221968", email);
   formData.append("entry.1379318390", message);
 
-  fetch("https://docs.google.com/forms/u/0/d/e/1FAIpQLSdxM-ixMqudOndJO-X2E6Cv6r7rlWK7btRMX9j3Ptq3IPyZQA/formResponse", {
-    method: "POST",
-    body: formData,
-    mode: "no-cors"
-  })
-  .then(() => {
-    alert("✅ Feedback submitted successfully!");
+  try {
+    await fetch(googleFormURL, {
+      method: "POST",
+      mode: "no-cors",
+      body: formData
+    });
+
+    alert("✅ Thank you for your feedback!");
+    
+    // Clear form
     document.getElementById('feedbackEmail').value = "";
     document.getElementById('feedbackMsg').value = "";
 
+    // Reset UI
     quitMenu.style.display = 'none';
     feedbackForm.style.display = 'none';
     document.getElementById('quitOptions').style.display = 'flex';
-  })
-  .catch((error) => {
-    console.error("Error submitting feedback:", error);
-    alert("⚠️ Something went wrong. Try again later.");
-  });
-});
+    
+  } catch (err) {
+    console.error("Error:", err);
+    alert("⚠️ Something went wrong! Please try again.");
+  } finally {
+    // Reset button
+    submitFeedback.disabled = false;
+    submitFeedback.textContent = 'Submit';
+  }
+});  
 
   usernameInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') goBtn.click();
   });
 });
+
 
 
 
