@@ -26,7 +26,7 @@ window.addEventListener('load', () => {
   // Preload background image
   const img = new Image();
   img.onload = checkAllLoaded;
-  img.onerror = checkAllLoaded; // Still hide loader even if image fails
+  img.onerror = checkAllLoaded;
   img.src = assetsToLoad[0];
 
   // Preload fonts
@@ -42,7 +42,6 @@ window.addEventListener('load', () => {
       checkAllLoaded();
     });
   } else {
-    // Fallback if Font Loading API not supported
     checkAllLoaded();
     checkAllLoaded();
   }
@@ -63,7 +62,6 @@ const lineEl = document.querySelector('.line');
 function updateMusicHint() {
   if (!musicHint) return;
   
-  // Check if music is on via the global controller
   const musicOn = window.musicController?.isMusicOn() || false;
   
   if (musicOn) {
@@ -75,21 +73,21 @@ function updateMusicHint() {
 
 // --- Custom toggle handler to update hint ---
 function handleMusicToggle() {
-  setTimeout(updateMusicHint, 50); // Small delay to let music.js update first
+  setTimeout(updateMusicHint, 50);
 }
 
 // --- On load ---
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('🟢 DOM Content Loaded');
+  
   // Animate tagline
   if (lineEl) {
     const txt = lineEl.textContent.trim();
     lineEl.innerHTML = txt.split('').map(ch => `<span>${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
   }
 
-  // Update hint based on current music state
   updateMusicHint();
 
-  // Add listener to update hint when music is toggled
   if (musicToggle) {
     musicToggle.addEventListener('click', handleMusicToggle);
   }
@@ -112,14 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.musicController) window.musicController.playClick();
     setTimeout(() => {
       window.location.href = 'optsc.html';
-    }, 150); // small delay so the sound plays fully
+    }, 150);
   });
 
   leaderboardBtn.addEventListener('click', () => {
     if (window.musicController) window.musicController.playClick();
     setTimeout(() => {
       window.location.href = 'lb1.html';
-    }, 150); // small delay so the sound plays fully
+    }, 150);
   });
 
   
@@ -129,6 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const feedbackBtn = document.getElementById('feedbackBtn');
   const feedbackForm = document.getElementById('feedbackForm');
   const submitFeedback = document.getElementById('submitFeedback');
+
+  // Debug: Check if elements exist
+  console.log('🔍 Submit button found:', submitFeedback);
 
   quitBtn.addEventListener('click', () => {
     if (window.musicController) window.musicController.playClick();
@@ -140,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     feedbackForm.style.display = 'none';
     document.getElementById('quitOptions').style.display = 'flex';
     
-    // Restore original text
     const quitTitle = document.querySelector('.quit-title');
     if (quitTitle) {
       quitTitle.textContent = 'Leaving Already?';
@@ -157,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('quitOptions').style.display = 'none';
     feedbackForm.style.display = 'flex';
     
-    // Change the title text for feedback
     const quitTitle = document.querySelector('.quit-title');
     if (quitTitle) {
       quitTitle.textContent = 'We\'re Listening!';
@@ -165,69 +164,95 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ===== WEB3FORMS FEEDBACK SUBMISSION =====
-  submitFeedback.addEventListener('click', async (e) => {
-    e.preventDefault();
+  if (submitFeedback) {
+    console.log('✅ Attaching feedback submit listener');
+    
+    submitFeedback.addEventListener('click', async (e) => {
+      e.preventDefault();
+      console.log('🚀 Submit button clicked!');
 
-    const email = document.getElementById('feedbackEmail').value.trim();
-    const message = document.getElementById('feedbackMsg').value.trim();
+      const emailInput = document.getElementById('feedbackEmail');
+      const messageInput = document.getElementById('feedbackMsg');
+      
+      console.log('📧 Email input:', emailInput);
+      console.log('💬 Message input:', messageInput);
 
-    if (!message) {
-      alert('Please write your feedback before submitting.');
-      return;
-    }
+      const email = emailInput ? emailInput.value.trim() : '';
+      const message = messageInput ? messageInput.value.trim() : '';
 
-    // Disable button and show loading
-    submitFeedback.disabled = true;
-    submitFeedback.textContent = 'Sending...';
+      console.log('Email value:', email);
+      console.log('Message value:', message);
 
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
+      if (!message) {
+        alert('Please write your feedback before submitting.');
+        return;
+      }
+
+      // Disable button and show loading
+      submitFeedback.disabled = true;
+      submitFeedback.textContent = 'Sending...';
+      console.log('⏳ Sending to Web3Forms...');
+
+      try {
+        const payload = {
           access_key: "34ccbc99-ea9d-4838-8861-7033676f1a12",
           email: email || "anonymous@typorush.com",
           message: message,
           subject: "New Typo Rush Feedback",
           from_name: "Typo Rush Feedback Form"
-        })
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert("✅ Thank you for your feedback!");
+        };
         
-        // Clear form
-        document.getElementById('feedbackEmail').value = "";
-        document.getElementById('feedbackMsg').value = "";
+        console.log('📦 Payload:', payload);
 
-        // Close feedback form
-        quitMenu.style.display = 'none';
-        feedbackForm.style.display = 'none';
-        document.getElementById('quitOptions').style.display = 'flex';
-        
-        // Restore title
-        const quitTitle = document.querySelector('.quit-title');
-        if (quitTitle) {
-          quitTitle.textContent = 'Leaving Already?';
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        console.log('📡 Response status:', response.status);
+        const result = await response.json();
+        console.log('📨 Response data:', result);
+
+        if (result.success) {
+          console.log('✅ SUCCESS!');
+          alert("✅ Thank you for your feedback!");
+          
+          // Clear form
+          if (emailInput) emailInput.value = "";
+          if (messageInput) messageInput.value = "";
+
+          // Close feedback form
+          quitMenu.style.display = 'none';
+          feedbackForm.style.display = 'none';
+          document.getElementById('quitOptions').style.display = 'flex';
+          
+          // Restore title
+          const quitTitle = document.querySelector('.quit-title');
+          if (quitTitle) {
+            quitTitle.textContent = 'Leaving Already?';
+          }
+        } else {
+          console.log('❌ FAILED:', result);
+          alert("⚠️ Failed to send message. Please try again.");
         }
-      } else {
-        alert("⚠️ Failed to send message. Please try again.");
-      }
 
-    } catch (error) {
-      console.error("Error submitting feedback:", error);
-      alert("⚠️ An error occurred. Please try again later.");
-    } finally {
-      // Reset button
-      submitFeedback.disabled = false;
-      submitFeedback.textContent = 'Submit';
-    }
-  });
+      } catch (error) {
+        console.error("❌ ERROR:", error);
+        alert("⚠️ An error occurred. Please try again later.");
+      } finally {
+        // Reset button
+        submitFeedback.disabled = false;
+        submitFeedback.textContent = 'Submit';
+        console.log('🔄 Button reset');
+      }
+    });
+  } else {
+    console.error('❌ Submit button NOT FOUND!');
+  }
 
   
   usernameInput.addEventListener('keydown', e => {
