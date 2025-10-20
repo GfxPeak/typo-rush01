@@ -118,14 +118,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 
       playerList.innerHTML = leaderboard
         .slice(1)
-        .map((p, i) => {
-          let ts = p.timestamp ? new Date(p.timestamp).toLocaleString() : "";
-          return `<li>
-                    <span>${p.name}</span>
-                    <span>${p.lps.toFixed(2)} LPS</span>
-                    <span class="played-on">${ts ? `Played on: ${ts}` : ''}</span>
-                  </li>`;
-        })
+        .map(
+          (p, i) =>
+            `<li><span>${p.name}</span><span>${p.lps.toFixed(2)} LPS</span></li>`
+        )
         .join("");
     } else {
       topPlayerName.textContent = "No players yet";
